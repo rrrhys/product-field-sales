@@ -9,11 +9,16 @@ angular.module('starter.services', ['ngResource'])
     .factory("LocalStorageService", function($window) {
         return {
             setData: function(name,val) {
-                $window.localStorage && $window.localStorage.setItem(name, JSON.stringify(val));
+                var clone = angular.copy(val);
+
+                $window.localStorage && $window.localStorage.setItem(name,angular.toJson(val));
                 return this;
             },
             getData: function(name) {
                 return $window.localStorage && JSON.parse($window.localStorage.getItem(name));
+            },
+            removeData: function(name) {
+                $window.localStorage.removeItem(name);
             }
         };
     });

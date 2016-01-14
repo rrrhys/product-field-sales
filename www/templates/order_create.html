@@ -1,10 +1,10 @@
 
-<ion-view view-title="Create Order">
+<ion-view view-title="{{pendingOrder.order_checking_out ? 'Finalising Order' : 'Create Order'}}">
 
     <ion-content>
 
 
-        <div class="list">
+        <div class="list" ng-if="!pendingOrder.order_checking_out">
 
             <div class="item item-divider">
                 Order Contents
@@ -12,11 +12,22 @@
             <item-in-order ng-repeat="item in pendingOrder.items"></item-in-order>
 
             <div class="item">
-                <button class="button button-block button-positive" ng-click="goProducts()">
+                <button class="button button-block button-positive button-outline icon-left ion-plus-round" ng-click="goProducts()">
                     Add Products
+                </button>
+                <button class="button button-block button-assertive button-outline icon-left ion-close-round" ng-click="discardOrder()">
+                    Discard Order
+                </button>
+                <button class="button button-block button-balanced button-outline icon-left ion-checkmark-round" ng-click="checkoutOrder()">
+                    Finalise Order (${{price_total | number:2}})
                 </button>
             </div>
 
+        </div>
+        <div class="list" ng-if="pendingOrder.order_checking_out">
+            <div class="row">
+                <div class="col">Finalising order for ${{price_total | number:2}}</div>
+            </div>
             <div class="item item-divider">
                 Customer
             </div>
@@ -27,9 +38,17 @@
                 <input type="text" placeholder="Last Name">
             </label>
             <label class="item item-input">
-                <textarea placeholder="Comments"></textarea>
+                <input type="email" placeholder="Email Address">
             </label>
-
+            <div class="item item-toggle">
+                Email order to client
+                <label class="toggle toggle-balanced">
+                    <input type="checkbox">
+                    <div class="track">
+                        <div class="handle"></div>
+                    </div>
+                </label>
+            </div>
         </div>
     </ion-content>
 </ion-view>

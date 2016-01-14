@@ -18,7 +18,7 @@ angular.module('starter.controllers', ['starter.services'])
 
   // Form data for the login modal
 
-  $scope.pendingOrder = LocalStorageService.getData('pendingOrder') || {items: [], started_at: null};
+
   $scope.allProducts = ProductService.query();
   $scope.pendingFills = null;
       $scope.fillItemsWithProducts = function(order){
@@ -39,9 +39,14 @@ angular.module('starter.controllers', ['starter.services'])
           window.clearTimeout($scope.pendingFills);
         }
 
-      }
+      };
+
+      $scope.loadPendingOrder = function(){
+        $scope.pendingOrder = LocalStorageService.getData('pendingOrder') || {items: [], started_at: null, order_checking_out:false};
+      };
 
   $scope.loginData = {};
+      $scope.loadPendingOrder();
 
   // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -82,12 +87,29 @@ angular.module('starter.controllers', ['starter.services'])
 
     .controller('OrderCreateCtrl', function($scope, $location, LocalStorageService){
       $scope.fillItemsWithProducts($scope.pendingOrder);
+      $scope.price_total = 0;
+      angular.forEach($scope.pendingOrder.items, function(item){
+        $scope.price_total += item.product.price * item.quantity;
+      });
+
       $scope.myGoBack = function() {
         $ionicHistory.goBack();
       };
 
       $scope.goProducts = function(){
-        $location.path('/app/products');
+        $location.path('/app/products').replace();
+      }
+
+      $scope.discardOrder = function(){
+        if(confirm("Are you sure?")){
+          LocalStorageService.removeData('pendingOrder');
+          $scope.loadPendingOrder();
+        }
+      }
+
+      $scope.checkoutOrder = function(){
+        $scope.pendingOrder.order_checking_out = true;
+        LocalStorageService.setData('pendingOrder', $scope.pendingOrder);
       }
 
     })
@@ -139,6 +161,33 @@ angular.module('starter.controllers', ['starter.services'])
 
         pipo.quantity +=1;
         pipo.product_id = productId;
+        LocalStorageService.setData("pendingOrder", $scope.pendingOrder);
+
+      }
+
+      $scope.subtractOneFromCart = function(){
+        var pipo = $scope.productInPendingOrder;
+        if(pipo.dummy == true){
+          pipo.dummy = false;
+          $scope.pendingOrder.items.push(pipo);
+        }
+
+        pipo.quantity -=1;
+        pipo.product_id = productId;
+
+        if(pipo.quantity <= 0){
+          pipo.quantity = 0;
+
+          // where is it in the items list?
+          var delete_index = -1;
+          angular.forEach($scope.pendingOrder.items, function(obj,i){
+            if(obj.id == pipo.id){
+              delete_index = i;
+            }
+          });
+          $scope.pendingOrder.items.splice(delete_index,1);
+
+        }
         LocalStorageService.setData("pendingOrder", $scope.pendingOrder);
 
       }
