@@ -1,0 +1,17 @@
+<ion-view view-title="Orders">
+
+  <ion-nav-buttons side="right">
+    <button class="button" ng-click="goNewOrder()">
+      New Order
+    </button>
+  </ion-nav-buttons>
+  <ion-content>
+    <ion-list>
+      <ion-item ng-repeat="order in orders" href="#/app/orders/{{order.id}}">
+        Order: {{order.id}}
+      </ion-item>
+      <ion-item href="#/app/orders/create">Pending Order {{pendingOrder.items.length}} items</ion-item>
+    </ion-list>
+
+  </ion-content>
+</ion-view>

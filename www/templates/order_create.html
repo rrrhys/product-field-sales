@@ -1,0 +1,35 @@
+
+<ion-view view-title="Create Order">
+
+    <ion-content>
+
+
+        <div class="list">
+
+            <div class="item item-divider">
+                Order Contents
+            </div>
+            <item-in-order ng-repeat="item in pendingOrder.items"></item-in-order>
+
+            <div class="item">
+                <button class="button button-block button-positive" ng-click="goProducts()">
+                    Add Products
+                </button>
+            </div>
+
+            <div class="item item-divider">
+                Customer
+            </div>
+            <label class="item item-input">
+                <input type="text" placeholder="First Name">
+            </label>
+            <label class="item item-input">
+                <input type="text" placeholder="Last Name">
+            </label>
+            <label class="item item-input">
+                <textarea placeholder="Comments"></textarea>
+            </label>
+
+        </div>
+    </ion-content>
+</ion-view>

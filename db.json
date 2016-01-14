@@ -1,0 +1,54 @@
+{
+  "orders": [
+    {
+      "id": 1,
+      "placed_at": "2012-04-23T18:25:43.511Z",
+      "items": [
+        {
+          "id": 1,
+          "product_id": 4,
+          "quantity": 4,
+          "price": 3
+        },
+        {
+          "id": 2,
+          "product_id": 5,
+          "quantity": 5,
+          "price": 2.95
+        }
+      ],
+      "sent_at": null
+    },
+    {
+      "id": 2,
+      "placed_at": "2012-04-23T18:25:43.511Z",
+      "sent_at": null
+    }
+  ],
+  "products": [
+    {
+      "id": 4,
+      "name": "Magic Beans",
+      "description": "These are the magical beans.",
+      "photo": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRDWRoPP-DNg5xlc9JdBNEv96eDUiaUFnVl-9xZInP3exqp2QTq",
+      "price": 3,
+      "can_order": true
+    },
+    {
+      "id": 5,
+      "name": "Blue Magic Beans",
+      "description": "These are the magical beans (Blue).",
+      "photo": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTmHhsD12Yr5sKewDytFCCvwCrSO3vV1d08gjZ19v7iqPOvcyJd",
+      "price": 2.95,
+      "can_order": true
+    },
+    {
+      "id": 6,
+      "name": "Yellow Flowers",
+      "description": "And here we have some nice flowers.",
+      "photo": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQ3DraErHoOh1nOTpRC_RnBGsrbf0UF5LQHYqD0g9Ar7mSKeOq1-A",
+      "price": 11.95,
+      "can_order": true
+    }
+  ]
+}

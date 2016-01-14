@@ -1,0 +1,14 @@
+
+<ion-view view-title="Order">
+
+  <ion-content>
+
+    Order: #{{order.id}}
+
+
+
+        <item-in-order ng-repeat="item in order.items"></item-in-order>
+    <div class="item">There are no items in this order.</div>
+
+  </ion-content>
+</ion-view>
