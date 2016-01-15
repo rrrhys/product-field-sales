@@ -1,6 +1,11 @@
 
 <ion-view view-title="{{pendingOrder.order_checking_out ? 'Finalising Order' : 'Create Order'}}">
 
+    <ion-nav-buttons side="right">
+        <button class="button" ng-click="returnToOrder()" ng-show="pendingOrder.order_checking_out">
+            Return to order
+        </button>
+    </ion-nav-buttons>
     <ion-content>
 
 
@@ -12,42 +17,51 @@
             <item-in-order ng-repeat="item in pendingOrder.items"></item-in-order>
 
             <div class="item">
-                <button class="button button-block button-positive button-outline icon-left ion-plus-round" ng-click="goProducts()">
+                <button class="button button-block button-positive icon-left ion-plus-round" ng-click="goProducts()" ng-class="{'button-outline': pendingOrder.items.length > 0}">
                     Add Products
                 </button>
                 <button class="button button-block button-assertive button-outline icon-left ion-close-round" ng-click="discardOrder()">
                     Discard Order
                 </button>
-                <button class="button button-block button-balanced button-outline icon-left ion-checkmark-round" ng-click="checkoutOrder()">
+                <button class="button button-block button-balanced icon-left ion-checkmark-round" ng-click="checkoutOrder()" ng-class="{'button-outline': pendingOrder.items.length == 0}">
                     Finalise Order (${{price_total | number:2}})
                 </button>
             </div>
 
         </div>
         <div class="list" ng-if="pendingOrder.order_checking_out">
-            <div class="row">
-                <div class="col">Finalising order for ${{price_total | number:2}}</div>
+            <div class="bar bar-header bar-positive" style="position:relative;">
+                <h1 class="title">Finalising order for ${{pendingOrder.price_total | number:2}}</h1>
             </div>
+            <div class="item">This order will be submitted for processing.</div>
             <div class="item item-divider">
                 Customer
             </div>
             <label class="item item-input">
-                <input type="text" placeholder="First Name">
+                <input type="text" placeholder="First Name" ng-model="pendingOrder.first_name">
             </label>
             <label class="item item-input">
-                <input type="text" placeholder="Last Name">
-            </label>
-            <label class="item item-input">
-                <input type="email" placeholder="Email Address">
+                <input type="text" placeholder="Last Name" ng-model="pendingOrder.last_name">
             </label>
             <div class="item item-toggle">
                 Email order to client
                 <label class="toggle toggle-balanced">
-                    <input type="checkbox">
+                    <input type="checkbox" ng-model="pendingOrder.will_email_client">
                     <div class="track">
                         <div class="handle"></div>
                     </div>
                 </label>
+            </div>
+            <label class="item item-input" ng-show="pendingOrder.will_email_client">
+                <input type="email" placeholder="Email Address" ng-model="pendingOrder.client_email">
+            </label>
+
+
+
+            <div class="item">
+                <button class="button button-block button-balanced icon-left ion-checkmark-round" ng-click="saveOrder()">
+                    Send Order (${{pendingOrder.price_total | number:2}})
+                </button>
             </div>
         </div>
     </ion-content>

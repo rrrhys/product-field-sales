@@ -1,5 +1,5 @@
     <a class="item item-thumbnail-left" href="/#/app/products/{{item.product.id}}">
-        <img ng-src="{{item.product.photo}}">
-        <h2>{{item.product.name}}</h2>
-        <p>Qty: {{item.quantity}} @ ${{(item.price || item.product.price) | number:2}} = ${{item.quantity * (item.price || item.product.price) | number:2}}</p>
+        <img ng-src="{{item.get('photo').url() || item.product.get('photo').url()}}">
+        <h2>{{item.product.get('name')}}</h2>
+        <p>Qty: {{item.quantity || item.get('quantity')}} @ ${{(item.get('price') || item.product.get('price')) | number:2}} = ${{(item.quantity || item.get('quantity')) * (item.get('price') || item.product.get('price')) | number:2}}</p>
     </a>

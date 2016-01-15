@@ -4,11 +4,11 @@
   <ion-content>
 
     Order: #{{order.id}}
+{{order.items}}
 
 
-
-        <item-in-order ng-repeat="item in order.items"></item-in-order>
-    <div class="item">There are no items in this order.</div>
+        <item-in-order ng-repeat="item in order.get('items')"></item-in-order>
+    <div class="item" ng-show="order.items.length == 0">There are no items in this order.</div>
 
   </ion-content>
 </ion-view>

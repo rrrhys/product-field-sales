@@ -6,11 +6,22 @@
     </button>
   </ion-nav-buttons>
   <ion-content>
+    <ion-refresher
+            pulling-text="Pull to refresh..."
+            on-refresh="doRefresh()">
+    </ion-refresher>
+    <div ng-if="showDebugMessages">{{orders | json }} <br/><br/>{{pendingOrder | json}}</div>
     <ion-list>
-      <ion-item ng-repeat="order in orders" href="#/app/orders/{{order.id}}">
-        Order: {{order.id}}
+      <ion-item href="#/app/orders/create" ng-if="pendingOrder.items.length > 0" class="item-assertive item-icon-right">Pending Order {{pendingOrder.items.length}} items
+        <i class="icon ion-arrow-right-c"></i></ion-item>
+      <ion-item ng-repeat="order in orders | orderBy: 'createdAt':true" href="#/app/orders/{{order.id}}">
+        <h2>{{order.get("first_name")}} {{order.get("last_name")}}</h2>
+        <p>Order: {{order.id}}<br/>
+          Items: {{order.get("items").length}}<br/></p>
+    <span class="item-note">
+      {{order.createdAt | date: 'dd-MM-yyyy @ HH:mm a'}}
+    </span>
       </ion-item>
-      <ion-item href="#/app/orders/create">Pending Order {{pendingOrder.items.length}} items</ion-item>
     </ion-list>
 
   </ion-content>
