@@ -6,8 +6,9 @@ Sales team loads up their product listing, and can place orders with clients whi
 Orders are returned to the office for processing or handling.
 
 # Using the project
-Start the mock data server, 
-    `json-server --watch db.json --host 192.168.1.21`
+~~Start the mock data server, 
+    `json-server --watch db.json --host 192.168.1.21`~~
+    Now uses a Parse site.
     
 Start ionic serve,
     `ionic serve`
