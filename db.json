@@ -1,4 +1,9 @@
 {
+  "settings": {
+    "recipient_emails": [
+      "rrrhys@gmail.com"
+    ]
+  },
   "orders": [
     {
       "id": 1,
