@@ -1,17 +1,20 @@
 angular.module('starter.controllers', ['starter.services'])
 
-    .controller('SplashCtrl', function($scope,$location){
+    .controller('SplashCtrl', function($scope,$location, LocalStorageService){
         $scope.$on('$ionicView.enter', function(){
+            $scope.settings = LocalStorageService.getData("user").settings;
             console.log("fired");
             window.setTimeout(function(){
                 console.log("redir");
                 $location.path("/app/orders");
+
+
             },500);
         });
 
     })
 
-    .controller('AppCtrl', function ($scope, $ionicModal, $timeout, ParseProductService, LocalStorageService) {
+    .controller('AppCtrl', function ($scope, $ionicModal, $timeout, ParseProductService, ParseUserService, LocalStorageService) {
 
         // With the new view caching in Ionic, Controllers are only called
         // when they are recreated or on app start, instead of every page change.
@@ -78,11 +81,25 @@ angular.module('starter.controllers', ['starter.services'])
             $scope.modal = modal;
         });
 
+        $scope.register = function(){
+            $scope.modalRegister.show();
+
+        }
+
+        // Create the register modal in case we will use later
+        $ionicModal.fromTemplateUrl('templates/register.html', {
+            scope: $scope
+        }).then(function (modal) {
+            $scope.modalRegister = modal;
+        });
+
         // Perform the login action when the user submits the login form
         $scope.doLogin = function () {
-            console.log('Doing login', $scope.loginData);
-            debugger;
-            Parse.User.logIn($scope.loginData.username, $scope.loginData.password, {
+            ParseUserService.signIn($scope.loginData.username, $scope.loginData.password).then(function(u){
+                $scope.currentUser = u;
+                LocalStorageService.setData("user", u);
+            })
+            /*Parse.User.logIn($scope.loginData.username, $scope.loginData.password, {
                 success: function (user) {
                     $scope.currentUser = user;
                     LocalStorageService.setData("user", user);
@@ -90,7 +107,7 @@ angular.module('starter.controllers', ['starter.services'])
                 error: function (user, error) {
                     alert(error);
                 }
-            });
+            });*/
 
             // Simulate a login delay. Remove this and replace with your login
             // code if using a login system
@@ -99,10 +116,41 @@ angular.module('starter.controllers', ['starter.services'])
             }, 1000);
         };
 
+        $scope.showRegister = function(){
+            $scope.closeLogin();
+            $scope.register();
+        }
+
+        $scope.hideRegister = function(){
+            $scope.modalRegister.hide();
+        }
+
+        $scope.doRegister = function(){
+            // register the user and log them in.
+            ParseUserService.register($scope.registerData.username, $scope.registerData.password).then(function(u){
+                $scope.currentUser = u;
+                LocalStorageService.setData("user", u);
+                $scope.hideRegister();
+            }, function(e){
+                debugger;
+            });
+        };
+
         $scope.showDebugMessages = false;
         $scope.currentUser = LocalStorageService.getData("user");
+
+        if(!$scope.currentUser){
+            window.setTimeout(function(){$scope.login()},500)
+        }
+        else{
+            ParseUserService.refresh().then(function(u){
+                $scope.currentUser = u;
+                LocalStorageService.setData("user", u);
+            })
+        }
         $scope.allProducts = [];
         $scope.loginData = {};
+        $scope.registerData = {};
         $scope.pendingFillsTimeoutID = null;
 
 
@@ -242,13 +290,93 @@ angular.module('starter.controllers', ['starter.services'])
         }
     })
 
-    .controller('ProductCreateEditCtrl', function($scope, $stateParams, ParseProductService){
+    .controller('ProductCreateEditCtrl', function($scope, $stateParams, ParseProductService, $ionicLoading, $location){
         var productId = $stateParams.productId;
-
+        $scope.pendingProduct = {};
         if(productId){
             // it's an existing product.
             ParseProductService.get(productId).then(function (p) {
                 $scope.pendingProduct = p;
+            });
+        }
+
+
+        // todo: refactor out of here.
+        $scope.getAFileName = function(){
+            var text = "";
+            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+            for( var i=0; i < 10; i++ )
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+            return text;
+        };
+
+
+        // todo: refactor out of here.
+        $scope.takePhoto = function(){
+
+            var srcType = {
+                PHOTOLIBRARY: 0,
+                CAMERA: 1,
+                SAVEDPHOTOALBUM: 2
+            };
+
+            srcType = 0;
+            var cameraSuccess = function (base64) {
+                window.setTimeout(function () {
+                   /* console.log(base64.substr(0,1000));
+                    if(dataCache.profile.get("coverPhoto") == fieldToUpdate){
+                        var imgtag = mp.find(".dog_photo").find("img");
+                        imgtag.attr('src', "data:image/jpeg;base64," + base64);
+                        imgtag.removeClass("no_photo");
+                    }
+                    $("." + fieldToUpdate).attr('src', "data:image/jpeg;base64," + base64);*/
+                    var file = new Parse.File(getAFileName(), {base64: base64});
+                    file.save().then(
+                        function(){
+                            $scope.pendingProduct.photos.push(file);
+                        },
+                        function(error){
+                            console.log(error.code);
+                        });
+
+
+                    console.log("File saved?");
+
+                }, 100)
+            };
+            var cameraOptions = {
+                sourceType: srcType,
+                quality: parseInt(50),
+                destinationType: Camera.DestinationType.DATA_URL,
+                targetWidth: 400,
+                targetHeight: 600,
+                correctOrientation: true
+            };
+            console.log("PST:" + srcType);
+            console.log("Quality: " + cameraOptions.quality);
+            if(navigator.camera){
+                navigator.camera.getPicture(cameraSuccess, cameraError, cameraOptions)
+
+            }
+        }
+
+        $scope.saveProduct = function(){
+            //todo: validation here
+
+            $ionicLoading.show({
+                template: 'Loading...'
+            });
+
+            debugger;
+
+            ParseProductService.create($scope.pendingProduct).then(function (p) {
+                $ionicLoading.hide();
+                $location.path('/app/products/' + p.id);
+            }, function(e,a,b,c){
+                debugger;
+                $ionicLoading.hide();
             });
         }
     })
@@ -318,16 +446,3 @@ angular.module('starter.controllers', ['starter.services'])
 
     })
 
-    .controller('PlaylistsCtrl', function ($scope) {
-        $scope.playlists = [
-            {title: 'Reggae', id: 1},
-            {title: 'Chill', id: 2},
-            {title: 'Dubstep', id: 3},
-            {title: 'Indie', id: 4},
-            {title: 'Rap', id: 5},
-            {title: 'Cowbell', id: 6}
-        ];
-    })
-
-    .controller('PlaylistCtrl', function ($scope, $stateParams) {
-    });

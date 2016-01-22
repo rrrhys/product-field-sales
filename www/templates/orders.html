@@ -6,6 +6,7 @@
     </button>
   </ion-nav-buttons>
   <ion-content>
+    <div ng-if="orders.length > 0 || pendingOrder.items.length > 0">
     <ion-refresher
             pulling-text="Pull to refresh..."
             on-refresh="doRefresh()">
@@ -22,7 +23,23 @@
       {{order.createdAt | date: 'dd-MM-yyyy @ HH:mm a'}}
     </span>
       </ion-item>
+
+
+
     </ion-list>
+    </div>
+    <div class="center" ng-if="orders.length == 0 && pendingOrder.items.length == 0">
+      <div class="row">
+        <div class="col">
+          <button class="button button-block button-positive" style="padding-top:10px;" ng-click="goOrders()">
+            <img src="img/1452854844_shopping_bag.svg"/><br/>
+            <strong>You have no orders. <br/>Click 'New Order' above to create one
+          </button>
+
+        </div>
+      </div>
+    </div>
+
 
   </ion-content>
 </ion-view>

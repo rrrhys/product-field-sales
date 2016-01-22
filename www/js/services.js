@@ -1,16 +1,99 @@
+stripAngularStuff = function(obj){
+    delete obj._objCount;
+
+}
+
+
 angular.module('starter.services', ['ngResource', 'ngParse'])
     .config(['ParseProvider', function(ParseProvider) {
         ParseProvider.initialize(ENV.parse_app, ENV.parse_js_key);
     }])
 
+    .factory('ParseUserService', function($q, Parse){
+
+        var settingsObject = Parse.Object.extend("Settings");
+        Parse.defineAttributes(settingsObject, ["company"]);
+
+        var private_acl = new Parse.ACL();
+        if(Parse.User.current()){
+            private_acl.setWriteAccess(Parse.User.current(), true);
+            private_acl.setReadAccess(Parse.User.current(), true);
+        }
+
+        return {
+            fetchSettings: function(){
+                var defer = $q.defer();
+                var id = Parse.User.current().get("settings").id;
+
+                var query = new Parse.Query(settingsObject);
+                query.get(id, {success: function(s){
+                    defer.resolve(s);
+                }, error: function(e){
+                    defer.reject(e);
+                }});
+                return defer.promise;
+            },
+            refresh: function(){
+                var self=this;
+              var defer = $q.defer();
+                Parse.User.current().fetch(function(u){
+                    u.settings = self.fetchSettings().then(function(s){
+                        u.settings = s;
+                        defer.resolve(u);
+                    });
+                },
+                function(e){
+                    defer.reject(e);
+                });
+
+                return defer.promise;
+            },
+            signIn: function(email, password){
+                var defer = $q.defer();
+                Parse.User.logIn(email, password, {
+                    success: function (user) {
+                        defer.resolve(user);
+                    },
+                    error: function (user, error) {
+                        defer.reject(error);
+                    }
+                });
+                return defer.promise;
+            },
+            register: function(email,password,company){
+                var defer = $q.defer();
+                var user = new Parse.User();
+                user.set("email", email);
+                user.set("password", password);
+                user.set("username",email);
+
+                var settings = new settingsObject();
+                settings.set("company", company);
+                user.set("settings", settings);
+
+                user.signUp(null, {success: function(u){
+                    defer.resolve(u);
+                },
+                error: function(u, e){
+                  defer.reject(e);
+                }})
+
+                return defer.promise;
+
+            }
+        }
+
+    })
     .factory('ParseOrderService', function ($q) {
         var itemObject = Parse.Object.extend("Item");
         var orderObject = Parse.Object.extend("Order");
 
         var private_acl = new Parse.ACL();
         // give write access to the current user
-        private_acl.setWriteAccess(Parse.User.current(), true);
-        private_acl.setReadAccess(Parse.User.current(), true);
+        if(Parse.User.current()){
+            private_acl.setWriteAccess(Parse.User.current(), true);
+            private_acl.setReadAccess(Parse.User.current(), true);
+        }
 
         return {
             query: function () {
@@ -88,6 +171,14 @@ angular.module('starter.services', ['ngResource', 'ngParse'])
     })
 
     .factory('ParseProductService',function ($q, Parse) {
+
+        var private_acl = new Parse.ACL();
+        // give write access to the current user
+        if(Parse.User.current()){
+            private_acl.setWriteAccess(Parse.User.current(), true);
+            private_acl.setReadAccess(Parse.User.current(), true);
+        }
+
         var productObject = Parse.Object.extend("Product");
         Parse.defineAttributes(productObject, ["name","description", "price", "can_order", "photo"]);
 
@@ -117,6 +208,54 @@ angular.module('starter.services', ['ngResource', 'ngParse'])
                     }
                 });
                 return defer.promise;
+            },
+            create: function (productRequest) {
+                var defer = $q.defer();
+                var Product = new productObject();
+                Product.setACL(private_acl);
+
+                // strip items from the orderRequest.
+                productRequest.user = Parse.User.current();
+                for(var key in productRequest.attributes){
+                    Product.set(key, productRequest.attributes[key]);
+                }
+                Product.id = productRequest.id;
+
+                // stripAngularStuff(productRequest);
+
+                Product.save(null, {
+                    success: function (productResult) {
+                        defer.resolve(productResult);
+                        /*var itemsRequest = [];
+                        angular.forEach(items, function(item){
+                            item.order = orderResult;
+                            item.price = item.product.get("price");
+                            item.photo = item.product.get("photo");
+                            console.log(item);
+                            var Item = new itemObject(item);
+                            Item.setACL(private_acl);
+                            itemsRequest.push(Item);
+
+                        });*/
+                        /*Parse.Object.saveAll(itemsRequest, {
+                            success: function(objs){
+                                orderResult.set("items",itemsRequest);
+                                orderResult.save();
+                                defer.resolve(orderResult);
+                            },
+                            error: function(error){
+                                defer.reject(error);
+
+                            }
+                        })*/
+                    }, error: function (orderResult, error,a,b,c) {
+                        defer.reject(error);
+
+                    }
+                });
+
+                return defer.promise;
+
             }
         }
 
