@@ -24,7 +24,7 @@
                     Discard Order
                 </button>
                 <button class="button button-block button-balanced icon-left ion-checkmark-round" ng-click="checkoutOrder()" ng-class="{'button-outline': pendingOrder.items.length == 0}">
-                    Finalise Order (${{price_total | number:2}})
+                    Finalise Order (${{pendingOrder.price_total | number:2}})
                 </button>
             </div>
 

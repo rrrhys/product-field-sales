@@ -1,0 +1,36 @@
+<ion-view view-title="{{pendingProduct.id ? 'Save Product' : 'Add Product'}}">
+
+    <ion-content>
+
+        <div class="list">
+
+            <div class="item">
+                <span ng-if="!pendingProduct.id">Fill in the details below and click 'Add Product' to add to your inventory.</span>
+                <span ng-if="pendingProduct.id">Make any changes required and click 'Save Product' to update in inventory.</span>
+            </div>
+            <div class="item item-divider">
+                Product Information
+            </div>
+            <input type="hidden" ng-model="pendingProduct.id" />
+
+            <label class="item item-input">
+                <input type="text" placeholder="Product Name" ng-model="pendingProduct.name">
+            </label>
+            <label class="item item-input">
+                <textarea placeholder="Description" ng-model="pendingProduct.description"></textarea>
+            </label>
+            <label class="item item-input">
+                <input type="number" placeholder="Price" ng-model="pendingProduct.price">
+            </label>
+            <div class="item item-divider">
+                Product Photos
+            </div>
+
+            <div class="item">
+                <button class="button button-block button-balanced icon-left ion-checkmark-round" ng-click="saveProduct()">
+                    {{pendingProduct.id ? "Save Product" : "Add Product" }}
+                </button>
+            </div>
+            </div>
+    </ion-content>
+    </ion-view>

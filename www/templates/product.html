@@ -1,4 +1,10 @@
 <ion-view view-title="{{product.get('name')}} details">
+
+    <ion-nav-buttons side="right">
+        <button class="button" ng-click="editProduct()">
+            Edit Product
+        </button>
+    </ion-nav-buttons>
     <ion-content>
         <img ng-src="{{product.get('photo').url()}}" style="width:100%;">
         <div style="position:relative;width:100%;height:1px;">

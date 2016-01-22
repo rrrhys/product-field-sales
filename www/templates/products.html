@@ -2,6 +2,8 @@
   <ion-content>
       <div ng-if="showDebugMessages">{{allProducts | json }}</div>
       <ion-list>
+          <ion-item href="#/app/orders/create" ng-if="pendingOrder.items.length > 0" class="item-assertive item-icon-right">Pending Order {{pendingOrder.items.length}} items
+              <i class="icon ion-arrow-right-c"></i></ion-item>
         <ion-item ng-repeat="product in allProducts" href="#/app/products/{{product.id}}" class="item item-thumbnail-left">
           <img ng-src="{{product.get('photo').url()}}">
           <h2>{{product.get('name')}}</h2>
@@ -10,4 +12,11 @@
         </ion-item>
       </ion-list>
   </ion-content>
+
+
+    <div class="bar bar-footer bar-balanced">
+            <button class="button button-full" ng-click="goNewProduct()" style="margin-top:0;">Add new Product</button>
+
+
+    </div>
 </ion-view>

@@ -1,5 +1,15 @@
 angular.module('starter.controllers', ['starter.services'])
 
+    .controller('SplashCtrl', function($scope,$location){
+        $scope.$on('$ionicView.enter', function(){
+            console.log("fired");
+            window.setTimeout(function(){
+                console.log("redir");
+                $location.path("/app/orders");
+            },500);
+        });
+
+    })
 
     .controller('AppCtrl', function ($scope, $ionicModal, $timeout, ParseProductService, LocalStorageService) {
 
@@ -15,7 +25,7 @@ angular.module('starter.controllers', ['starter.services'])
         $scope.fillItemsWithProducts = function (order, callback) {
             if ($scope.allProducts.length == 0) {
                 $scope.pendingFillsTimeoutID = window.setTimeout(function () {
-                    $scope.fillItemsWithProducts(order)
+                    $scope.fillItemsWithProducts(order, callback)
                 }, 500);
             }
             else {
@@ -130,14 +140,20 @@ angular.module('starter.controllers', ['starter.services'])
 
     .controller('OrderCreateCtrl', function ($scope, $location, LocalStorageService, ParseOrderService, $ionicLoading, $ionicPopup) {
 
-        $scope.loadProducts();
-        $scope.pendingOrder.price_total = 0;
+        $scope.$on('$ionicView.enter', function(){
+            console.log("ran totals");
+            $scope.loadProducts();
+            $scope.pendingOrder.price_total = 0;
 
-        $scope.fillItemsWithProducts($scope.pendingOrder, function () {
-            angular.forEach($scope.pendingOrder.items, function (item) {
-                $scope.pendingOrder.price_total += item.product ? (item.product.get('price') * item.quantity) : 0;
+            $scope.fillItemsWithProducts($scope.pendingOrder, function () {
+                angular.forEach($scope.pendingOrder.items, function (item) {
+                    $scope.pendingOrder.price_total += item.product ? (item.product.get('price') * item.quantity) : 0;
+                });
+
+                console.log($scope.pendingOrder.price_total);
             });
         });
+
 
 
         $scope.myGoBack = function () {
@@ -218,11 +234,26 @@ angular.module('starter.controllers', ['starter.services'])
         };
     })
 
-    .controller('ProductsCtrl', function ($scope, ParseProductService) {
+    .controller('ProductsCtrl', function ($scope, $location) {
         $scope.loadProducts();
+
+        $scope.goNewProduct = function(){
+            $location.path("/app/products/create")
+        }
     })
 
-    .controller('ProductCtrl', function ($scope, $stateParams, LocalStorageService, ParseProductService) {
+    .controller('ProductCreateEditCtrl', function($scope, $stateParams, ParseProductService){
+        var productId = $stateParams.productId;
+
+        if(productId){
+            // it's an existing product.
+            ParseProductService.get(productId).then(function (p) {
+                $scope.pendingProduct = p;
+            });
+        }
+    })
+
+    .controller('ProductCtrl', function ($scope, $stateParams, LocalStorageService, ParseProductService, $location) {
         var productId = $stateParams.productId;
         ParseProductService.get(productId).then(function (p) {
             $scope.product = p;
@@ -232,13 +263,17 @@ angular.module('starter.controllers', ['starter.services'])
         $scope.productInPendingOrder = {
             quantity: 0,
             dummy: true,
-        }
+        };
 
         for (var i = 0; i < $scope.pendingOrder.items.length; i++) {
             if ($scope.pendingOrder.items[i].product_id == productId) {
                 $scope.productInPendingOrder = $scope.pendingOrder.items[i];
                 break;
             }
+        }
+
+        $scope.editProduct = function(){
+            $location.path("/app/products/edit/" + productId);
         }
 
         $scope.addOneToCart = function () {
