@@ -89,7 +89,7 @@ angular.module('starter.services', ['ngResource', 'ngParse'])
 
     .factory('ParseProductService',function ($q, Parse) {
         var productObject = Parse.Object.extend("Product");
-        Parse.defineAttributes(productObject, ["name","description", "price", "can_order", "photos"]);
+        Parse.defineAttributes(productObject, ["name","description", "price", "can_order", "photo"]);
 
         return {
             query: function () {
