@@ -1,4 +1,7 @@
-angular.module('starter.services', ['ngResource'])
+angular.module('starter.services', ['ngResource', 'ngParse'])
+    .config(['ParseProvider', function(ParseProvider) {
+        ParseProvider.initialize(ENV.parse_app, ENV.parse_js_key);
+    }])
 
     .factory('ParseOrderService', function ($q) {
         var itemObject = Parse.Object.extend("Item");
@@ -84,8 +87,10 @@ angular.module('starter.services', ['ngResource'])
         }
     })
 
-    .factory('ParseProductService', function ($q) {
+    .factory('ParseProductService',function ($q, Parse) {
         var productObject = Parse.Object.extend("Product");
+        Parse.defineAttributes(productObject, ["name","description", "price", "can_order", "photos"]);
+
         return {
             query: function () {
                 var query = new Parse.Query(productObject);
