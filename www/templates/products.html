@@ -1,22 +1,35 @@
 <ion-view view-title="Products">
+    {{allProducts | json
   <ion-content>
       <div ng-if="showDebugMessages">{{allProducts | json }}</div>
       <ion-list>
           <ion-item href="#/app/orders/create" ng-if="pendingOrder.items.length > 0" class="item-assertive item-icon-right">Pending Order {{pendingOrder.items.length}} items
               <i class="icon ion-arrow-right-c"></i></ion-item>
         <ion-item ng-repeat="product in allProducts" href="#/app/products/{{product.id}}" class="item item-thumbnail-left">
-          <img ng-src="{{product.get('photo').url()}}">
-          <h2>{{product.get('name')}}</h2>
-            <p>{{product.get('description')}}</p>
+          <img ng-src="{{product.get('photo').url() || 'img/no-thumb.png'}}">
+          <h2>{{product.get('name') || "(none)"}}</h2>
+            <p>{{product.get('description') || "(no description)"}}</p>
             <div class="price-display ng-binding" style="background: rgba(0,0,0,0.6); color: #fff;position:absolute;padding: 2px 10px;right:10px; border-radius:3px;">${{product.get('price') | number:2}}</div>
         </ion-item>
+          <ion-item ng-if="allProducts.length == 0">aa</ion-item>
       </ion-list>
+
+      <div class="list" ng-if="allProducts.length == 0">
+          <div class="item card-item in done" style="transition-delay: 0.11s;">
+              <div ui-sref="app.gallery" class="card stable-bg ink ink-dark" href="#/app/gallery">
+                  <div class="item  item-text-wrap in" style="transition-delay: 0.2s;">
+                      <h2>No Products.</h2>
+                      <p>        Click '+' below to add a new product.
+                      </p>
+                  </div>
+              </div>
+          </div>
+      </div>
+
   </ion-content>
 
+    <button id="fab" class="button button-energized-900 button-fab button-fab-bottom-right" ng-click="goNewProduct()">
+        <i class="icon ion-ios-plus-empty"></i>
+    </button>
 
-    <div class="bar bar-footer bar-balanced">
-            <button class="button button-full" ng-click="goNewProduct()" style="margin-top:0;">Add new Product</button>
-
-
-    </div>
 </ion-view>

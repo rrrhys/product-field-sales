@@ -2,38 +2,44 @@
 
     <ion-content>
 
-        <div class="list">
+        <div class="im-wrapper">
 
-            <div class="item">
                 <span ng-if="!pendingProduct.id">Fill in the details below and click 'Add Product' to add to your inventory.</span>
                 <span ng-if="pendingProduct.id">Make any changes required and click 'Save Product' to update in inventory.</span>
-            </div>
-            <div class="item item-divider">
-                Product Information
-            </div>
-            <input type="hidden" ng-model="pendingProduct.id" />
 
-            <label class="item item-input">
-                <input type="text" placeholder="Product Name" ng-model="pendingProduct.name">
-            </label>
-            <label class="item item-input">
-                <textarea placeholder="Description" ng-model="pendingProduct.description"></textarea>
-            </label>
-            <label class="item item-input">
-                <i class="icon ion-pricetag placeholder-icon"></i>
-                <input type="number" placeholder="Price" ng-model="pendingProduct.price">
-            </label>
-            <div class="item item-divider">
-                Product Photos
+            <div class="list">
+                <h4 class="border-top">
+                    Product Information
+                </h4>
+                <input type="hidden" ng-model="pendingProduct.id" />
+
+
+                <label class="item item-input item-floating-label">
+                    <span class="input-label">Product Name</span>
+                    <input type="text" placeholder="Product Name" ng-model="pendingProduct.name">
+                </label>
+
+                <label class="item item-input item-floating-label">
+                    <span class="input-label">Description</span>
+                    <textarea placeholder="Description" ng-model="pendingProduct.description"></textarea>
+                </label>
+                <label class="item item-input item-floating-label">
+                    <span class="input-label">Price</span>
+                    <input type="number" placeholder="Price" ng-model="pendingProduct.price">
+                </label>
+
+                <h4>
+                    Product Photos
+                </h4>
+
 
                 <button class="button button-block button-outline" ng-click="takePhoto()">Take Photo</button>
-            </div>
-
-            <div class="item">
+                <br/>
                 <button class="button button-block button-balanced icon-left ion-checkmark-round" ng-click="saveProduct()">
                     {{pendingProduct.id ? "Save Product" : "Add Product" }}
                 </button>
             </div>
-            </div>
+
+        </div>
     </ion-content>
     </ion-view>

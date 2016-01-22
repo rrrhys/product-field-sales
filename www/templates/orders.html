@@ -1,12 +1,8 @@
 <ion-view view-title="Orders">
 
   <ion-nav-buttons side="right">
-    <button class="button" ng-click="goNewOrder()">
-      New Order
-    </button>
   </ion-nav-buttons>
   <ion-content>
-    <div ng-if="orders.length > 0 || pendingOrder.items.length > 0">
     <ion-refresher
             pulling-text="Pull to refresh..."
             on-refresh="doRefresh()">
@@ -27,19 +23,25 @@
 
 
     </ion-list>
-    </div>
-    <div class="center" ng-if="orders.length == 0 && pendingOrder.items.length == 0">
-      <div class="row">
-        <div class="col">
-          <button class="button button-block button-positive" style="padding-top:10px;" ng-click="goOrders()">
-            <img src="img/1452854844_shopping_bag.svg"/><br/>
-            <strong>You have no orders. <br/>Click 'New Order' above to create one
-          </button>
 
+
+    <div class="list" ng-if="orders.length == 0 && pendingOrder.items.length == 0">
+      <div class="item card-item in done" style="transition-delay: 0.11s;">
+        <div ui-sref="app.gallery" class="card stable-bg ink ink-dark" href="#/app/gallery">
+          <div class="item  item-text-wrap in" style="transition-delay: 0.2s;">
+            <h2>No Orders.</h2>
+            <p>        Click '+' below to start a new order.
+            </p>
+          </div>
         </div>
       </div>
     </div>
 
+    </ion-content>
 
-  </ion-content>
+
+
+  <button id="fab" class="button button-energized-900 button-fab button-fab-bottom-right"  ng-click="goNewOrder()">
+    <i class="icon ion-ios-plus-empty"></i>
+  </button>
 </ion-view>

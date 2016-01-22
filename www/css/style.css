@@ -30,3 +30,15 @@
     -ms-flex-align: center;
     align-items: center;
 }
+
+.menu .item  {
+    color: #aaa;
+    border-bottom: 1px solid #666;
+    font-size:12pt;
+    letter-spacing: 0.5px;
+}
+.menu .item i {
+    font-size: 18pt;
+    font-weight: 100;
+    padding-right: 15px;
+}

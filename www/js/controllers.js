@@ -2,7 +2,14 @@ angular.module('starter.controllers', ['starter.services'])
 
     .controller('SplashCtrl', function($scope,$location, LocalStorageService){
         $scope.$on('$ionicView.enter', function(){
-            $scope.settings = LocalStorageService.getData("user").settings;
+            $scope.settings = {};
+            try{
+                $scope.settings = LocalStorageService.getData("user").settings;
+
+            }
+            catch(e){
+
+            }
             console.log("fired");
             window.setTimeout(function(){
                 console.log("redir");
@@ -71,6 +78,7 @@ angular.module('starter.controllers', ['starter.services'])
 
         // Open the login modal
         $scope.login = function () {
+            $scope.hideRegister();
             $scope.modal.show();
         };
 

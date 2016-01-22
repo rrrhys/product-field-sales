@@ -1,13 +1,10 @@
 
 <ion-view view-title="{{pendingOrder.order_checking_out ? 'Finalising Order' : 'Create Order'}}">
 
-    <ion-nav-buttons side="right">
-        <button class="button" ng-click="returnToOrder()" ng-show="pendingOrder.order_checking_out">
-            Return to order
-        </button>
-    </ion-nav-buttons>
+    <button id="fab" class="button button-positive button-fab button-fab-bottom-left" ng-if="pendingOrder.order_checking_out" style="display: block;" ng-click="returnToOrder()">
+        <i class="icon ion-ios-undo-outline"></i>
+    </button>
     <ion-content>
-
 
         <div class="list" ng-if="!pendingOrder.order_checking_out">
 
@@ -20,9 +17,11 @@
                 <button class="button button-block button-positive icon-left ion-plus-round" ng-click="goProducts()" ng-class="{'button-outline': pendingOrder.items.length > 0}">
                     Add Products
                 </button>
+                <br>
                 <button class="button button-block button-assertive button-outline icon-left ion-close-round" ng-click="discardOrder()">
                     Discard Order
                 </button>
+                <br>
                 <button class="button button-block button-balanced icon-left ion-checkmark-round" ng-click="checkoutOrder()" ng-class="{'button-outline': pendingOrder.items.length == 0}">
                     Finalise Order (${{pendingOrder.price_total | number:2}})
                 </button>
@@ -30,9 +29,6 @@
 
         </div>
         <div class="list" ng-if="pendingOrder.order_checking_out">
-            <div class="bar bar-header bar-positive" style="position:relative;">
-                <h1 class="title">Finalising order for ${{pendingOrder.price_total | number:2}}</h1>
-            </div>
             <div class="item">This order will be submitted for processing.</div>
             <div class="item item-divider">
                 Customer
