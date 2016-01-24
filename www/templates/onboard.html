@@ -1,0 +1,27 @@
+
+<ion-view view-title="Onboard">
+    <ion-header-bar align-title="left" class="bar-positive">
+        <h1 class="title">Hi there!</h1>
+    </ion-header-bar>
+
+
+
+    <ion-content>
+
+        <div class="row">
+            <div class="list card callout-box">
+                Hi! This app helps you, a sales person, place orders on behalf of customers when out in the field.<br/><br/>
+                There's some set up involved to add all of your products before you can place an order.<br/><br/>
+                So you can quickly try the app, we can <strong>fill your store with some demo products</strong>.
+                <button class="button button-positive button-block">
+                    Add demo products (TODO)
+                </button><br/>
+                <button class="button button-positive button-outline button-block" ng-click="onboardDoneAndSendTo('/products/create')">
+                    Just enter <strong>my</strong> products
+                </button>
+            </div>
+
+        </div>
+
+    </ion-content>
+</ion-view>

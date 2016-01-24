@@ -1,5 +1,56 @@
 angular.module('starter.controllers', ['starter.services'])
+    .run(function($rootScope, $ionicModal){
+        var $scope;
+        // Create the login modal that we will use later
+        $ionicModal.fromTemplateUrl('templates/login.html', {
+            scope: $rootScope
+        }).then(function (modal) {
+            $rootScope.modal = modal;
+        });
 
+        // Create the register modal in case we will use later
+        $ionicModal.fromTemplateUrl('templates/register.html', {
+            scope: $rootScope
+        }).then(function (modal) {
+            $rootScope.modalRegister = modal;
+        });
+
+
+
+
+        // Triggered in the login modal to close it
+        $rootScope.closeLogin = function () {
+            $rootScope.modal.hide();
+        };
+
+        // Open the login modal
+        $rootScope.login = function () {
+            $rootScope.hideRegister();
+
+            if(!$rootScope.modal){
+                window.setTimeout($rootScope.login,200);
+            }
+            if( $rootScope.modal) $rootScope.modal.show();
+        };
+
+        $rootScope.register = function(){
+            $rootScope.modalRegister.show();
+
+        };
+
+
+
+        $rootScope.showRegister = function(){
+            $rootScope.closeLogin();
+            $rootScope.register();
+        }
+
+        $rootScope.hideRegister = function(){
+            if($rootScope.modalRegister) $rootScope.modalRegister.hide();
+        }
+
+
+    })
     .controller('SplashCtrl', function($scope,$location, LocalStorageService){
         $scope.$on('$ionicView.enter', function(){
             $scope.settings = {};
@@ -21,7 +72,29 @@ angular.module('starter.controllers', ['starter.services'])
 
     })
 
-    .controller('AppCtrl', function ($scope, $ionicModal, $timeout, ParseProductService, ParseUserService, LocalStorageService) {
+    .controller('OnboardCtrl', function($scope,$location, LocalStorageService, ParseUserService){
+        ParseUserService.refresh().then(function(u){
+            $scope.currentUser = u;
+            LocalStorageService.setData("user", u);
+
+            if(!$scope.currentUser){
+                $scope.login();
+            }
+        }, function(e){
+
+            if(!$scope.currentUser){
+                $scope.login();
+            }
+        })
+
+        $scope.onboardDoneAndSendTo = function(sendTo){
+            $scope.currentUser.settings.set("onboard_complete",new Date());
+            ParseUserService.update($scope.currentUser);
+        }
+
+    })
+
+    .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $timeout, ParseProductService, ParseUserService, LocalStorageService) {
 
         // With the new view caching in Ionic, Controllers are only called
         // when they are recreated or on app start, instead of every page change.
@@ -71,67 +144,29 @@ angular.module('starter.controllers', ['starter.services'])
                 };
         };
 
-        // Triggered in the login modal to close it
-        $scope.closeLogin = function () {
-            $scope.modal.hide();
-        };
 
-        // Open the login modal
-        $scope.login = function () {
-            $scope.hideRegister();
-            $scope.modal.show();
-        };
 
-        // Create the login modal that we will use later
-        $ionicModal.fromTemplateUrl('templates/login.html', {
-            scope: $scope
-        }).then(function (modal) {
-            $scope.modal = modal;
-        });
 
-        $scope.register = function(){
-            $scope.modalRegister.show();
-
-        }
-
-        // Create the register modal in case we will use later
-        $ionicModal.fromTemplateUrl('templates/register.html', {
-            scope: $scope
-        }).then(function (modal) {
-            $scope.modalRegister = modal;
-        });
 
         // Perform the login action when the user submits the login form
         $scope.doLogin = function () {
             ParseUserService.signIn($scope.loginData.username, $scope.loginData.password).then(function(u){
                 $scope.currentUser = u;
                 LocalStorageService.setData("user", u);
-            })
-            /*Parse.User.logIn($scope.loginData.username, $scope.loginData.password, {
-                success: function (user) {
-                    $scope.currentUser = user;
-                    LocalStorageService.setData("user", user);
-                },
-                error: function (user, error) {
-                    alert(error);
-                }
-            });*/
+            }, function(e){
+                if(e.code == 101){
+                    // could not login with those credentials
+                    // An alert dialog
+                        var alertPopup = $ionicPopup.alert({
+                            title: "Couldn't log you in",
+                            template: 'Please try your credentials again!'
+                        }).then(function(){
+                            $scope.login();
 
-            // Simulate a login delay. Remove this and replace with your login
-            // code if using a login system
-            $timeout(function () {
-                $scope.closeLogin();
-            }, 1000);
+                        })
+                };
+            });
         };
-
-        $scope.showRegister = function(){
-            $scope.closeLogin();
-            $scope.register();
-        }
-
-        $scope.hideRegister = function(){
-            $scope.modalRegister.hide();
-        }
 
         $scope.doRegister = function(){
             // register the user and log them in.
@@ -140,7 +175,17 @@ angular.module('starter.controllers', ['starter.services'])
                 LocalStorageService.setData("user", u);
                 $scope.hideRegister();
             }, function(e){
-                debugger;
+                if(e.code == 203){
+                    // user exists
+                    // An alert dialog
+                    var alertPopup = $ionicPopup.alert({
+                        title: "That user exists!",
+                        template: 'Please try logging in, or use a different email address.'
+                    }).then(function(){
+                        $scope.showRegister();
+
+                    })
+                };
             });
         };
 
@@ -148,7 +193,7 @@ angular.module('starter.controllers', ['starter.services'])
         $scope.currentUser = LocalStorageService.getData("user");
 
         if(!$scope.currentUser){
-            window.setTimeout(function(){$scope.login()},500)
+            window.setTimeout(function(){$scope.login()},100)
         }
         else{
             ParseUserService.refresh().then(function(u){

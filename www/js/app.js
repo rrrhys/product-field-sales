@@ -127,7 +127,13 @@ angular.module('starter', ['ionic', 'ionic-material', 'starter.controllers'])
             url: '/',
                 templateUrl: 'templates/splash.html',
                 controller: 'SplashCtrl'
-        });
+        })
+            .state('onboarding', {
+                url: '/onboard',
+                templateUrl: 'templates/onboard.html',
+                controller: 'OnboardCtrl'
+            })
+        ;
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/');
     });

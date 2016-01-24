@@ -11,7 +11,6 @@
             <p>{{product.get('description') || "(no description)"}}</p>
             <div class="price-display ng-binding" style="background: rgba(0,0,0,0.6); color: #fff;position:absolute;padding: 2px 10px;right:10px; border-radius:3px;">${{product.get('price') | number:2}}</div>
         </ion-item>
-          <ion-item ng-if="allProducts.length == 0">aa</ion-item>
       </ion-list>
 
       <div class="list" ng-if="allProducts.length == 0">

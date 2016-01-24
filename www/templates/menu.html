@@ -35,7 +35,7 @@
 
 <ion-side-menus enable-menu-with-back-views="true">
   <ion-side-menu-content>
-    <ion-nav-bar class="bar-positive-900" ng-class="{expanded: isExpanded, 'has-header-fab-left': hasHeaderFabLeft, 'has-header-fab-right': hasHeaderFabRight}" align-title="left">
+    <ion-nav-bar class="bar-dark" ng-class="{expanded: isExpanded, 'has-header-fab-left': hasHeaderFabLeft, 'has-header-fab-right': hasHeaderFabRight}" align-title="left">
       <ion-nav-back-button class="no-text">
       </ion-nav-back-button>
       <ion-nav-buttons side="left">
@@ -58,6 +58,7 @@
         <!-- <ion-item menu-close ng-click="login()" ng-class="{'item-positive': currentUser.username}">
           {{currentUser.username ? "Signed in as " + currentUser.username : "Sign In"}}
         </ion-item> -->
+        <ion-item menu-close ng-click="login()" ng-if="!currentUser" class="emphasis-calm-900">Please sign in</ion-item>
         <ion-item menu-close href="#/app/products">
           <i class="icon ion-bag"></i>
           Products
@@ -65,6 +66,14 @@
         <ion-item menu-close href="#/app/orders">
           <i class="icon ion-pricetag"></i>
           Orders
+        </ion-item>
+        <ion-item menu-close href="#/onboard">
+          <i class="icon ion-pricetag"></i>
+          debug -onboard
+        </ion-item>
+        <ion-item menu-close>
+          TODO
+          Sign Out
         </ion-item>
       </ion-list>
     </ion-content>

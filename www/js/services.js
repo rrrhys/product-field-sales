@@ -48,6 +48,16 @@ angular.module('starter.services', ['ngResource', 'ngParse'])
 
                 return defer.promise;
             },
+            update: function(u){
+                var defer = $q.defer();
+                u.save().then(function(){
+                    u.settings.save();
+                  defer.resolve();
+                },function(e){
+                    defer.reject(e);
+                });
+                return defer.promise;
+            },
             signIn: function(email, password){
                 var defer = $q.defer();
                 Parse.User.logIn(email, password, {

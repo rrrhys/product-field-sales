@@ -4,40 +4,45 @@
 
         <div class="im-wrapper">
 
-                <span ng-if="!pendingProduct.id">Fill in the details below and click 'Add Product' to add to your inventory.</span>
-                <span ng-if="pendingProduct.id">Make any changes required and click 'Save Product' to update in inventory.</span>
 
             <div class="list">
-                <h4 class="border-top">
-                    Product Information
-                </h4>
-                <input type="hidden" ng-model="pendingProduct.id" />
+                <div class="card pad">
+
+                    <span ng-if="!pendingProduct.id">Fill in the details below and click 'Add Product' to add to your inventory.</span>
+                    <span ng-if="pendingProduct.id">Make any changes required and click 'Save Product' to update in inventory.</span>
+
+                    <h4 class="border-top">
+                        Product Information
+                    </h4>
+                    <input type="hidden" ng-model="pendingProduct.id" />
 
 
-                <label class="item item-input item-floating-label">
-                    <span class="input-label">Product Name</span>
-                    <input type="text" placeholder="Product Name" ng-model="pendingProduct.name">
-                </label>
+                    <label class="item item-input item-floating-label">
+                        <span class="input-label">Product Name</span>
+                        <input type="text" placeholder="Product Name" ng-model="pendingProduct.name">
+                    </label>
 
-                <label class="item item-input item-floating-label">
-                    <span class="input-label">Description</span>
-                    <textarea placeholder="Description" ng-model="pendingProduct.description"></textarea>
-                </label>
-                <label class="item item-input item-floating-label">
-                    <span class="input-label">Price</span>
-                    <input type="number" placeholder="Price" ng-model="pendingProduct.price">
-                </label>
+                    <label class="item item-input item-floating-label">
+                        <span class="input-label">Description</span>
+                        <textarea placeholder="Description" ng-model="pendingProduct.description"></textarea>
+                    </label>
+                    <label class="item item-input item-floating-label">
+                        <span class="input-label">Price</span>
+                        <input type="number" placeholder="Price" ng-model="pendingProduct.price">
+                    </label>
 
-                <h4>
-                    Product Photos
-                </h4>
+                    <h4>
+                        Product Photos
+                    </h4>
 
 
-                <button class="button button-block button-outline" ng-click="takePhoto()">Take Photo</button>
-                <br/>
-                <button class="button button-block button-balanced icon-left ion-checkmark-round" ng-click="saveProduct()">
-                    {{pendingProduct.id ? "Save Product" : "Add Product" }}
-                </button>
+                    <button class="button button-block button-outline" ng-click="takePhoto()">Take Photo</button>
+                    <br/>
+                    <button class="button button-block button-balanced icon-left ion-checkmark-round" ng-click="saveProduct()">
+                        {{pendingProduct.id ? "Save Product" : "Add Product" }}
+                    </button>
+                </div>
+
             </div>
 
         </div>
