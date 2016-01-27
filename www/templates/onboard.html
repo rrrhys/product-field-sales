@@ -8,20 +8,34 @@
 
     <ion-content>
 
-        <div class="row">
-            <div class="list card callout-box">
-                Hi! This app helps you, a sales person, place orders on behalf of customers when out in the field.<br/><br/>
-                There's some set up involved to add all of your products before you can place an order.<br/><br/>
-                So you can quickly try the app, we can <strong>fill your store with some demo products</strong>.
+
+
+        <div class="list">
+            <div class="item card-item in done" style="transition-delay: 0.11s;">
+                <div ui-sref="app.gallery" class="card stable-bg ink ink-dark" href="#/app/gallery">
+                    <div class="item  item-text-wrap in" style="transition-delay: 0.2s;">
+                        <h2>Getting started.</h2>
+                        <p>{{app_name}} helps you place orders on behalf of customers when out in the field.<br/><br/>
+                            There's some set up involved to add all of your products before you can place an order.<br/><br/>
+                            <strong>Do you want to fill your store with some demo products?</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item card-item">
                 <button class="button button-positive button-block">
                     Add demo products (TODO)
                 </button><br/>
-                <button class="button button-positive button-outline button-block" ng-click="onboardDoneAndSendTo('/products/create')">
+                <button class="button button-block" ng-click="onboardDoneAndSendTo('/app/products/create')">
                     Just enter <strong>my</strong> products
                 </button>
             </div>
 
+
+
         </div>
+
 
     </ion-content>
 </ion-view>

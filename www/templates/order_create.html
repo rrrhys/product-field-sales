@@ -14,11 +14,11 @@
             <item-in-order ng-repeat="item in pendingOrder.items"></item-in-order>
 
             <div class="item">
-                <button class="button button-block button-positive icon-left ion-plus-round" ng-click="goProducts()" ng-class="{'button-outline': pendingOrder.items.length > 0}">
+                <button class="button button-block icon-left ion-plus-round" ng-click="goProducts()">
                     Add Products
                 </button>
                 <br>
-                <button class="button button-block button-assertive button-outline icon-left ion-close-round" ng-click="discardOrder()">
+                <button class="button button-block icon-left ion-close-round" ng-click="discardOrder()">
                     Discard Order
                 </button>
                 <br>

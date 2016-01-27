@@ -1,16 +1,17 @@
 <ion-view view-title="Products">
     {{allProducts | json
   <ion-content>
+      <ion-refresher
+              pulling-text="Pull to refresh..."
+              on-refresh="doRefresh()">
+      </ion-refresher>
       <div ng-if="showDebugMessages">{{allProducts | json }}</div>
       <ion-list>
           <ion-item href="#/app/orders/create" ng-if="pendingOrder.items.length > 0" class="item-assertive item-icon-right">Pending Order {{pendingOrder.items.length}} items
               <i class="icon ion-arrow-right-c"></i></ion-item>
-        <ion-item ng-repeat="product in allProducts" href="#/app/products/{{product.id}}" class="item item-thumbnail-left">
-          <img ng-src="{{product.get('photo').url() || 'img/no-thumb.png'}}">
-          <h2>{{product.get('name') || "(none)"}}</h2>
-            <p>{{product.get('description') || "(no description)"}}</p>
-            <div class="price-display ng-binding" style="background: rgba(0,0,0,0.6); color: #fff;position:absolute;padding: 2px 10px;right:10px; border-radius:3px;">${{product.get('price') | number:2}}</div>
-        </ion-item>
+        <item-in-products ng-repeat="product in allProducts | orderBy: 'product.name'" ng-click="goProduct(product)" class="item item-thumbnail-left">
+
+        </item-in-products>
       </ion-list>
 
       <div class="list" ng-if="allProducts.length == 0">

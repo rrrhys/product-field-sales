@@ -7,14 +7,20 @@
 
             <div class="list">
                 <div class="card pad">
+                <span class="item item-body">
+                                    <span ng-if="!pendingProduct.id">Fill in the details below and click 'Add Product' to add to your inventory.</span>
+                <span ng-if="pendingProduct.id">Make any changes required and click 'Save Product' to update in inventory.</span>
+                </span>
 
-                    <span ng-if="!pendingProduct.id">Fill in the details below and click 'Add Product' to add to your inventory.</span>
-                    <span ng-if="pendingProduct.id">Make any changes required and click 'Save Product' to update in inventory.</span>
 
-                    <h4 class="border-top">
+                </div>
+                <div class="card pad">
+                    <div class="item item-divider">
+
                         Product Information
-                    </h4>
-                    <input type="hidden" ng-model="pendingProduct.id" />
+                    </div>
+
+                    <input type="hidden" ng-model="pendingProduct.id"/>
 
 
                     <label class="item item-input item-floating-label">
@@ -31,20 +37,36 @@
                         <input type="number" placeholder="Price" ng-model="pendingProduct.price">
                     </label>
 
-                    <h4>
-                        Product Photos
-                    </h4>
-
-
-                    <button class="button button-block button-outline" ng-click="takePhoto()">Take Photo</button>
-                    <br/>
-                    <button class="button button-block button-balanced icon-left ion-checkmark-round" ng-click="saveProduct()">
-                        {{pendingProduct.id ? "Save Product" : "Add Product" }}
-                    </button>
                 </div>
+                <div class="card pad">
+
+                    <div class="item item-divider">
+                        Product Photos
+                    </div>
+                    <div class="item-body item">
+
+                        <div ng-repeat="photo in pendingProduct.photos">
+                            <!-- {{photo | json}} --> <br/><img ng-src="{{photo.url()}}" />
+                        </div>
+                    </div>
+
+                    <button class="button button-block icon-left ion-camera" ng-click="takePhoto()">Take
+                        Photo
+                    </button>
+                    <br/>
+                    <button class="button button-block icon-left ion-ios-film" ng-click="fromGallery()">
+                        From Gallery
+                    </button>
+                    <br/>
+
+                </div>
+                <button class="button button-block button-balanced icon-left ion-checkmark-round"
+                        ng-click="saveProduct()">
+                    {{pendingProduct.id ? "Save Product" : "Add Product" }}
+                </button>
 
             </div>
 
         </div>
     </ion-content>
-    </ion-view>
+</ion-view>

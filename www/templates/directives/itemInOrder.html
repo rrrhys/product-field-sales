@@ -1,5 +1,12 @@
-    <a class="item item-thumbnail-left" href="/#/app/products/{{item.product.id}}">
-        <img ng-src="{{item.get('photo').url() || item.product.get('photo').url() || 'img/no-thumb.png'}}">
+    <a class="item item-thumbnail-left" href="#/app/products/{{item.product.id}}">
+        <div style="width:100%;height:100%;top:10px;left:10px;position:absolute;max-width:80px;max-height:80px;background-size: cover;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    border-radius:4px;
+        background-image: url('{{item.product.photo.url() || item.product.photos.length > 0 ? item.product.photos[0].url() : 'img/no-thumb.png'}}');
+        "
+
+        >&nbsp;</div>
         <h2>{{item.product.get('name')}}</h2>
         <p>Qty: {{item.quantity || item.get('quantity')}} @ ${{(item.get('price') || item.product.get('price')) | number:2}} = ${{(item.quantity || item.get('quantity')) * (item.get('price') || item.product.get('price')) | number:2}}</p>
     </a>

@@ -1,7 +1,13 @@
 <ion-view view-title="{{product.name}} details">
 
     <ion-content>
-        <img ng-src="{{product.photo.url() || 'img/no-thumb.png'}}" style="width:100%;">
+        <div style="width:100%;height:300px;
+        background-size: cover;
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
+        background-image: url('{{product.photo.url() || product.photos.length > 0 ? product.photos[0].url() : 'img/no-thumb.png'}}');
+        ">&nbsp;</div>
+
         <div style="position:relative;width:100%;height:1px;">
             <div class="add-to-cart" ng-click="addOneToCart()" style="background-color: #26A65B;position:absolute;top:-30px;right:10px;;border-radius:50%;width:50px;height:50px;padding: 10px 10px 10px 13px;border: 0px solid #fff;
         ">

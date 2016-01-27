@@ -190,7 +190,7 @@ angular.module('starter.services', ['ngResource', 'ngParse'])
         }
 
         var productObject = Parse.Object.extend("Product");
-        Parse.defineAttributes(productObject, ["name","description", "price", "can_order", "photo"]);
+        Parse.defineAttributes(productObject, ["name","description", "price", "can_order", "photo", "photos"]);
 
         return {
             query: function () {
@@ -226,8 +226,8 @@ angular.module('starter.services', ['ngResource', 'ngParse'])
 
                 // strip items from the orderRequest.
                 productRequest.user = Parse.User.current();
-                for(var key in productRequest.attributes){
-                    Product.set(key, productRequest.attributes[key]);
+                for(var key in productRequest){
+                    Product.set(key, productRequest[key]);
                 }
                 Product.id = productRequest.id;
 

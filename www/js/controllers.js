@@ -1,6 +1,9 @@
 angular.module('starter.controllers', ['starter.services'])
     .run(function($rootScope, $ionicModal){
         var $scope;
+
+        $rootScope.app_name = "_FIELD_SALES_";
+
         // Create the login modal that we will use later
         $ionicModal.fromTemplateUrl('templates/login.html', {
             scope: $rootScope
@@ -90,6 +93,8 @@ angular.module('starter.controllers', ['starter.services'])
         $scope.onboardDoneAndSendTo = function(sendTo){
             $scope.currentUser.settings.set("onboard_complete",new Date());
             ParseUserService.update($scope.currentUser);
+
+            $location.path(sendTo);
         }
 
     })
@@ -130,9 +135,13 @@ angular.module('starter.controllers', ['starter.services'])
 
         };
 
-        $scope.loadProducts = function () {
+        $scope.loadProducts = function (cb) {
             ParseProductService.query().then(function (p) {
                 $scope.allProducts = p;
+
+                if(cb){
+                    cb();
+                }
             });
         };
 
@@ -341,11 +350,22 @@ angular.module('starter.controllers', ['starter.services'])
         $scope.goNewProduct = function(){
             $location.path("/app/products/create")
         }
+
+        $scope.goProduct = function(product){
+            $location.path( "/app/products/" + product.id);
+        }
+
+        $scope.doRefresh = function(){
+
+            $scope.loadProducts(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+            });
+        }
     })
 
     .controller('ProductCreateEditCtrl', function($scope, $stateParams, ParseProductService, $ionicLoading, $location){
         var productId = $stateParams.productId;
-        $scope.pendingProduct = {};
+        $scope.pendingProduct = {photos: []};
         if(productId){
             // it's an existing product.
             ParseProductService.get(productId).then(function (p) {
@@ -367,7 +387,8 @@ angular.module('starter.controllers', ['starter.services'])
 
 
         // todo: refactor out of here.
-        $scope.takePhoto = function(){
+
+        $scope.getPhotoFromDevice = function(srcTypeInt){
 
             var srcType = {
                 PHOTOLIBRARY: 0,
@@ -378,17 +399,19 @@ angular.module('starter.controllers', ['starter.services'])
             srcType = 0;
             var cameraSuccess = function (base64) {
                 window.setTimeout(function () {
-                   /* console.log(base64.substr(0,1000));
-                    if(dataCache.profile.get("coverPhoto") == fieldToUpdate){
-                        var imgtag = mp.find(".dog_photo").find("img");
-                        imgtag.attr('src', "data:image/jpeg;base64," + base64);
-                        imgtag.removeClass("no_photo");
-                    }
-                    $("." + fieldToUpdate).attr('src', "data:image/jpeg;base64," + base64);*/
-                    var file = new Parse.File(getAFileName(), {base64: base64});
+                    var file = new Parse.File($scope.getAFileName(), {base64: base64});
+
+
+                    $ionicLoading.show({
+                        template: 'Saving photo...'
+                    });
+
+
                     file.save().then(
                         function(){
+                            $ionicLoading.hide();
                             $scope.pendingProduct.photos.push(file);
+                            console.log("File saved.");
                         },
                         function(error){
                             console.log(error.code);
@@ -399,9 +422,12 @@ angular.module('starter.controllers', ['starter.services'])
 
                 }, 100)
             };
+            var cameraError = function(){
+                debugger;
+            }
             var cameraOptions = {
-                sourceType: srcType,
-                quality: parseInt(50),
+                sourceType: srcTypeInt,
+                quality: parseInt(75),
                 destinationType: Camera.DestinationType.DATA_URL,
                 targetWidth: 400,
                 targetHeight: 600,
@@ -413,7 +439,16 @@ angular.module('starter.controllers', ['starter.services'])
                 navigator.camera.getPicture(cameraSuccess, cameraError, cameraOptions)
 
             }
+
         }
+
+        $scope.takePhoto = function(){
+            return $scope.getPhotoFromDevice(1);
+        };
+
+        $scope.fromGallery = function(){
+            return $scope.getPhotoFromDevice(0);
+        };
 
         $scope.saveProduct = function(){
             //todo: validation here

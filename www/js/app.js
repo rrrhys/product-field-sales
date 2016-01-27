@@ -13,6 +13,13 @@ angular.module('starter', ['ionic', 'ionic-material', 'starter.controllers'])
         };
     })
 
+
+    .directive("itemInProducts", function () {
+        return {
+            templateUrl: "templates/directives/itemInProducts.html"
+        };
+    })
+
     .run(function ($ionicPlatform) {
         $ionicPlatform.ready(function () {
 
